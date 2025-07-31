@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Carmem Cakes</title>
+  <link rel="icon" type="image/png" href="divas.png">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: Arial, sans-serif; 
+      background-color: #fff; 
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    .nav-wrapper {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: #fff;
+      z-index: 1000;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .header { 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      padding: 8px 16px; 
+    }
+    .menu-icon { 
+      font-size: 28px; 
+      cursor: pointer; 
+      position: relative;
+    }
+    .bag-icon { 
+      width: 56px; /* Aumentado de 46px para 56px */
+      height: 56px; /* Aumentado de 46px para 56px */
+      cursor: pointer; 
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .bag-icon img {
+      width: 100%;
+      height: auto;
+    }
+    .bag-icon .cart-count {
+      position: absolute;
+      top: -4px;
+      right: -8px;
+      background: #ff0000;
+      color: #fff;
+      font-size: 12px;
+      padding: 2px 6px;
+      border-radius: 12px;
+      display: none;
+    }
+    .logo img { 
+      max-height: 80px; 
+      width: auto; 
+      cursor: pointer; 
+    }
+    .search-container { 
+      display: flex; 
+      width: 100%; 
+      padding: 0 16px 16px; 
+    }
+    .search-input {
+      flex: 1; 
+      padding: 12px;
+      border: 1px solid #ccc; 
+      border-radius: 8px 0 0 8px;
+      outline: none; 
+      font-size: 16px; 
+      background-color: #f2f2f2;
+    }
+    .search-button {
+      background-color: #dfb33a; 
+      border: none;
+      padding: 0 16px; 
+      border-radius: 0 8px 8px 0;
+      cursor: pointer; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center;
+    }
+    .search-button img { 
+      height: 36px; 
+      width: auto; 
+    }
+    
+    /* CATEGORIAS TEXTO - COM ANIMAÇÃO DE SCROLL */
+    .categories-container {
+      display: flex; 
+      gap: 16px; 
+      overflow-x: auto;
+      scroll-behavior: smooth; 
+      padding: 8px 16px 16px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .categories-container.hidden {
+      scrollbar-width: none;
+    }
+    .categories-container.hidden::-webkit-scrollbar {
+      display: none;
+    }
+    .categories-container::-webkit-scrollbar {
+      height: 6px;
+      transition: all 0.3s ease;
+    }
+    .categories-container.hidden::-webkit-scrollbar-thumb {
+      background-color: transparent;
+    }
+    .categories-container::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 3px;
+    }
+    .categories-container::-webkit-scrollbar-thumb {
+      background: #dfb33a;
+      border-radius: 3px;
+      transition: all 0.3s ease;
+    }
+    .category { 
+      cursor: pointer; 
+      white-space: nowrap; 
+      padding: 12px 0;
+      font-size: 18px;
+      font-weight: 500;
+      text-transform: uppercase;
+      color: #333;
+      transition: all 0.2s;
+    }
+    .category:hover {
+      color: #dfb33a;
+    }
+
+    /* RESTO DO CSS */
+    #breadcrumb { 
+      display: none; 
+      background: #fff; 
+      border-bottom: 1px solid #eee; 
+      padding: 8px 16px; 
+    }
+    #breadcrumb .path { 
+      font-size: 14px; 
+      color: #007bff; 
+      cursor: pointer; 
+      text-decoration: underline; 
+    }
+    #breadcrumb .separator { 
+      font-size: 14px; 
+      color: #555; 
+      margin: 0 8px; 
+    }
+    #breadcrumb .crumbName { 
+      font-size: 14px; 
+      text-transform: capitalize; 
+    }
+    .header-row { 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      margin-top: 8px; 
+    }
+    .header-row .title { 
+      font-weight: bold; 
+      font-size: 20px; 
+      text-transform: uppercase; 
+    }
+    .header-row .count { 
+      font-size: 14px; 
+      color: #555; 
+    }
+
+    .photo-scroll-wrapper { 
+      background-color: #f2f2f2; 
+      padding: 16px; 
+    }
+    .photo-scroll { 
+      display: flex; 
+      gap: 24px; 
+      overflow-x: auto; 
+      scroll-behavior: smooth; 
+    }
+    .photo-scroll::-webkit-scrollbar { 
+      display: none; 
+    }
+    .photo-item { 
+      flex: 0 0 auto; 
+      text-align: center; 
+      cursor: pointer; 
+    }
+    .photo-img { 
+      width: 100px; 
+      height: 100px; 
+      background-color: #f2f2f2; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      overflow: hidden; 
+      border-radius: 8px;
+    }
+    .photo-img img { 
+      max-width: 100%; 
+      max-height: 100%; 
+      object-fit: cover;
+    }
+    .photo-item .label { 
+      font-size: 16px; 
+      font-weight: bold; 
+      text-transform: capitalize; 
+      margin-top: 8px; 
+    }
+
+    .image-scroll-wrapper { 
+      background-color: #f2f2f2; 
+      padding: 16px; 
+    }
+    .image-scroll { 
+      display: flex; 
+      gap: 24px; 
+      overflow-x: auto; 
+      scroll-behavior: smooth; 
+    }
+    .image-scroll::-webkit-scrollbar { 
+      display: none; 
+    }
+
+    .banner-scroll-wrapper { 
+      background-color: #f2f2f2; 
+      padding: 8px 0 24px; 
+      overflow: hidden;
+      position: relative;
+    }
+    .banner-scroll { 
+      display: flex;
+      gap: 16px;
+      padding: 0 16px;
+      width: max-content;
+    }
+    .banner-scroll.single-banner {
+      width: 100%;
+      padding: 0;
+      justify-content: center;
+    }
+    .banner-scroll.scrolling {
+      animation: scrollBanners 15s linear infinite;
+    }
+    .banner-scroll img { 
+      height: 500px; 
+      width: calc(100vw - 32px);
+      object-fit: cover; 
+      border-radius: 12px;
+      flex-shrink: 0;
+    }
+    .banner-scroll.single-banner img {
+      width: 100%;
+      max-width: 1200px;
+      border-radius: 0;
+    }
+    @keyframes scrollBanners { 
+      0% { transform: translateX(0); }
+      100% { transform: translateX(calc(-50% - 8px)); }
+    }
+
+    .main-content {
+      margin-top: 220px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .produtos-wrapper { 
+      background-color: #f2f2f2; 
+      padding: 16px; 
+      flex: 1;
+      min-height: 300px;
+    }
+    .category-title { 
+      font-size: 24px; 
+      font-weight: bold; 
+      margin: 24px 0 16px;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .produtos-grid { 
+      display: grid; 
+      grid-template-columns: repeat(2, 1fr); 
+      gap: 24px; 
+    }
+    .produto { 
+      cursor: pointer; 
+    }
+    .produto img { 
+      width: 100%; 
+      height: 240px; 
+      object-fit: cover; 
+      border-radius: 8px; 
+      margin-bottom: 12px; 
+    }
+    .produto .nome { 
+      font-size: 14px; 
+      font-weight: bold; 
+      margin-bottom: 8px; 
+    }
+    .produto .preco { 
+      font-size: 20px; 
+      font-weight: bold; 
+      margin-bottom: 8px; 
+    }
+    .produto .parcelamento, 
+    .produto .extra { 
+      font-size: 13px; 
+      margin-bottom: 8px; 
+    }
+    .produto .extra { 
+      color: #007bff; 
+    }
+
+    /* MENU OVERLAY */
+    #overlayMenu { 
+      position: fixed; 
+      top: 0; 
+      left: 0; 
+      width: 100%; 
+      height: 100%; 
+      background: #fff; 
+      transform: translateX(-100%); 
+      transition: transform 0.3s ease; 
+      z-index: 2000; 
+      padding: 60px 20px; 
+      display: flex; 
+      flex-direction: column; 
+    }
+    #overlayMenu.open { 
+      transform: translateX(0); 
+    }
+    #overlayMenu .close-btn { 
+      position: absolute; 
+      top: 16px; 
+      right: 16px; 
+      font-size: 32px; 
+      cursor: pointer; 
+    }
+    #overlayMenu nav { 
+      display: flex; 
+      flex-direction: column; 
+      gap: 0; 
+      margin-top: 20px; 
+    }
+    #overlayMenu nav a { 
+      font-size: 20px; 
+      color: #000; 
+      text-decoration: none; 
+      text-transform: uppercase; 
+      padding: 8px 0; 
+    }
+
+    @media (max-width: 480px) {
+      .produtos-grid { 
+        grid-template-columns: 1fr 1fr; 
+      }
+      .produto img { 
+        height: 220px; 
+      }
+      .banner-scroll img {
+        height: 300px;
+      }
+      .banner-scroll.single-banner img {
+        height: 300px;
+      }
+      .category {
+        font-size: 16px;
+        padding: 10px 0;
+      }
+      .categories-container {
+        gap: 16px;
+        padding: 8px 16px 16px;
+      }
+      .photo-img {
+        width: 90px;
+        height: 90px;
+      }
+    }
+
+    /* FOOTER */
+    .site-footer {
+      background-color: #dfb33a;
+      color: #fff;
+      padding: 16px;
+      margin-top: auto;
+    }
+    .site-footer .footer-item {
+      margin-bottom: 12px;
+      font-size: 14px;
+    }
+    .site-footer .footer-item.instagram {
+      margin-bottom: 32px;
+    }
+    .site-footer .footer-item.instagram img {
+      width: 20px;
+      height: auto;
+      display: block;
+    }
+    .site-footer .footer-item a {
+      color: inherit;
+      text-decoration: none;
+    }
+    .site-footer .footer-item:last-child {
+      margin-bottom: 0;
+    }
+  </style>
+</head>
+<body>
+  <div id="overlayMenu">
+    <div class="close-btn">&times;</div>
+    <nav>
+      <a href="index.html" id="home-link">Início</a>
+      <a href="#" id="all-products-link">Produtos</a>
+      <a href="contato.html">Contato</a>
+    </nav>
+  </div>
+
+  <div class="nav-wrapper">
+    <header class="header">
+      <div class="menu-icon">&#9776;</div>
+      <a href="index.html" class="logo">
+        <img src="logo.webp" alt="Logo">
+      </a>
+      <a href="carrinho.html" class="bag-icon" id="cart-icon">
+        <img src="cart.webp" alt="Carrinho de compras">
+        <span class="cart-count" id="cart-count">0</span>
+      </a>
+    </header>
+    <div class="search-container">
+      <input class="search-input" type="text" placeholder="O que você está procurando?">
+      <button class="search-button"><img src="lupa.webp" alt="Buscar"></button>
+    </div>
+    <div id="cats" class="categories-container">
+      <div class="category">MORANGO DO AMOR</div>
+      <div class="category">BOLOS</div>
+      <div class="category">SALGADOS</div>
+      <div class="category">DOCES</div>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <div class="photo-scroll-wrapper">
+      <div class="photo-scroll">
+        <div class="photo-item" data-category="MORANGO DO AMOR"><div class="photo-img"><img src="morango.webp" alt="Morango do Amor"></div><div class="label">Morango do Amor</div></div>
+        <div class="photo-item" data-category="BOLOS"><div class="photo-img"><img src="bolos.webp" alt="Bolos"></div><div class="label">Bolos</div></div>
+        <div class="photo-item" data-category="SALGADOS"><div class="photo-img"><img src="salgados.webp" alt="Salgados"></div><div class="label">Salgados</div></div>
+        <div class="photo-item" data-category="DOCES"><div class="photo-img"><img src="doces.webp" alt="Doces"></div><div class="label">Doces</div></div>
+      </div>
+    </div>
+
+    <div id="breadcrumb">
+      <span class="path">Início</span>
+      <span class="separator">&gt;</span>
+      <span class="crumbName"></span>
+      <div class="header-row">
+        <span class="title"></span>
+        <span class="count"></span>
+      </div>
+    </div>
+
+    <div class="image-scroll-wrapper">
+      <div class="image-scroll"></div>
+    </div>
+
+    <div class="banner-scroll-wrapper">
+      <div id="banner-scroll" class="banner-scroll"></div>
+    </div>
+
+    <div class="produtos-wrapper" id="produtos-wrapper">
+      <!-- As categorias e produtos serão renderizados dinamicamente aqui -->
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-item instagram">
+      <a href="https://www.instagram.com/carmem_mcakes/" target="_blank" rel="noopener">
+        <img src="instagramicon.png" alt="Instagram">
+      </a>
+    </div>
+    <div class="footer-item">
+      <a href="https://wa.me/5598982066609" target="_blank" rel="noopener">
+        5598982066609
+      </a>
+    </div>
+    <div class="footer-item">
+      <a href="tel:+5598982066609">
+        98982066609
+      </a>
+    </div>
+    <div class="footer-item copyright">
+      © Flowmize – 2025. Todos os direitos reservados.
+    </div>
+  </footer>
+
+  <script>
+    const CART_KEY = 'cartItems';
+    const cartCountEl = document.getElementById('cart-count');
+    const catsEl = document.getElementById('cats');
+
+    // Configuração da barra de rolagem - só esconde após interação do usuário
+    let userHasInteracted = false;
+    let scrollTimeout;
+    
+    catsEl.addEventListener('scroll', () => {
+      userHasInteracted = true;
+      catsEl.classList.remove('hidden');
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        if (userHasInteracted) {
+          catsEl.classList.add('hidden');
+        }
+      }, 1000);
+    });
+
+    // Não esconde automaticamente no início - só depois que o usuário interagir
+    catsEl.addEventListener('pointerenter', () => {
+      userHasInteracted = true;
+      catsEl.classList.remove('hidden');
+    });
+
+    catsEl.addEventListener('pointerleave', () => {
+      if (userHasInteracted) {
+        setTimeout(() => {
+          catsEl.classList.add('hidden');
+        }, 1000);
+      }
+    });
+
+    function getCartItems() {
+      try {
+        return JSON.parse(localStorage.getItem(CART_KEY)) || [];
+      } catch {
+        return [];
+      }
+    }
+
+    function renderCartCount() {
+      const totalQty = getCartItems().reduce((sum, item) => sum + (item.quantidade || 0), 0);
+      if (totalQty > 0) {
+        cartCountEl.textContent = totalQty;
+        cartCountEl.style.display = 'inline-block';
+      } else {
+        cartCountEl.style.display = 'none';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', renderCartCount);
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) renderCartCount();
+    });
+
+    const overlay = document.getElementById('overlayMenu');
+    document.querySelector('.menu-icon').addEventListener('click', () => overlay.classList.add('open'));
+    overlay.querySelector('.close-btn').addEventListener('click', () => overlay.classList.remove('open'));
+
+    const logoImg = document.querySelector('.logo img');
+    const breadcrumbEl = document.getElementById('breadcrumb');
+    const pathEl = breadcrumbEl.querySelector('.path');
+    const crumbNameEl = breadcrumbEl.querySelector('.crumbName');
+    const headerTitleEl = breadcrumbEl.querySelector('.header-row .title');
+    const headerCountEl = breadcrumbEl.querySelector('.header-row .count');
+    const searchInput = document.querySelector('.search-input');
+    const searchButton = document.querySelector('.search-button');
+    const produtosWrapper = document.getElementById('produtos-wrapper');
+
+    let allBanners = [], allProdutos = [], categorizedProducts = {};
+
+    function normalizeText(text) {
+      return text
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .trim();
+    }
+
+    const categoryMap = {
+      'MORANGO DO AMOR': ['morango', 'morango do amor', 'morangos'],
+      'BOLOS': ['bolo', 'bolos', 'torta', 'tortas'],
+      'SALGADOS': ['salgado', 'salgados', 'salgadinho', 'salgadinhos'],
+      'DOCES': ['doce', 'doces', 'sobremesa', 'sobremesas']
+    };
+
+    function containsAnyTerm(text, terms) {
+      const normalizedText = normalizeText(text);
+      return terms.some(term => normalizedText.includes(term));
+    }
+
+    function filterByCategory(category) {
+      const searchTerms = categoryMap[category] || [normalizeText(category)];
+      
+      return allProdutos.filter(p => {
+        const nome = p.nome || '';
+        return containsAnyTerm(nome, searchTerms);
+      });
+    }
+
+    function categorizeProducts() {
+      categorizedProducts = {
+        'MORANGO DO AMOR': [],
+        'BOLOS': [],
+        'SALGADOS': [],
+        'DOCES': []
+      };
+
+      allProdutos.forEach(product => {
+        for (const [category, terms] of Object.entries(categoryMap)) {
+          if (containsAnyTerm(product.nome, terms)) {
+            categorizedProducts[category].push(product);
+            break;
+          }
+        }
+      });
+
+      for (const category in categorizedProducts) {
+        if (categorizedProducts[category].length === 0) {
+          delete categorizedProducts[category];
+        }
+      }
+    }
+
+    fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vTE8rKLWsyjrRSL1c1oUon_GxajT7HRwe_QSBCGLd2ja_qStMfDHeHYAklKsnpxo186cmPPKrh4wZFX/pub?output=csv')
+      .then(res => res.text())
+      .then(csv => {
+        const lines = csv.split('\n').slice(1);
+        const bannerContainer = document.getElementById('banner-scroll');
+
+        allBanners = [];
+        allProdutos = [];
+        
+        if (lines.length > 0) {
+          const firstLine = lines[0].split(',');
+          if (firstLine[0]?.trim() && firstLine[0].trim() !== 'Banner 1') {
+            allBanners.push(firstLine[0].trim());
+          }
+          if (firstLine[1]?.trim() && firstLine[1].trim() !== 'Banner 2') {
+            allBanners.push(firstLine[1].trim());
+          }
+        }
+
+        lines.forEach((line, index) => {
+          const cells = line.split(',');
+          const estoque = cells[7]?.trim();
+          
+          if (estoque === '0') return;
+          
+          const productName = cells[2]?.trim();
+          const productImage = cells[3]?.trim();
+          
+          if (!productName || !productImage) return;
+          
+          const product = {
+            nome: productName,
+            imagem: productImage,
+            descricao: cells[4]?.trim() || '',
+            preco: cells[5]?.trim() || '',
+            mensagem: cells[6]?.trim() || '',
+            estoque: estoque
+          };
+
+          allProdutos.push(product);
+        });
+
+        categorizeProducts();
+
+        bannerContainer.innerHTML = '';
+
+        if (allBanners.length === 1) {
+          bannerContainer.classList.add('single-banner');
+          const img = document.createElement('img');
+          img.src = allBanners[0];
+          img.style.width = '100%';
+          img.style.height = '500px';
+          img.style.objectFit = 'cover';
+          bannerContainer.appendChild(img);
+        } else if (allBanners.length === 2) {
+          bannerContainer.classList.add('scrolling');
+          
+          allBanners.forEach(url => {
+            const img = document.createElement('img');
+            img.src = url;
+            bannerContainer.appendChild(img);
+          });
+          
+          allBanners.forEach(url => {
+            const img = document.createElement('img');
+            img.src = url;
+            bannerContainer.appendChild(img);
+          });
+        }
+
+        renderCategorizedProducts();
+      })
+      .catch(error => {
+        console.error('Erro ao carregar dados:', error);
+        produtosWrapper.innerHTML = '<div style="text-align: center; padding: 20px;">Erro ao carregar produtos. Por favor, tente novamente mais tarde.</div>';
+      });
+
+    function renderCategorizedProducts() {
+      produtosWrapper.innerHTML = '';
+      
+      for (const [category, products] of Object.entries(categorizedProducts)) {
+        if (products.length === 0) continue;
+        
+        const categorySection = document.createElement('div');
+        categorySection.className = 'category-section';
+        
+        const title = document.createElement('div');
+        title.className = 'category-title';
+        title.textContent = category;
+        title.addEventListener('click', () => {
+          document.querySelector('.photo-scroll-wrapper').style.display = 'none';
+          document.querySelector('.image-scroll-wrapper').style.display = 'none';
+          document.querySelector('.banner-scroll-wrapper').style.display = 'none';
+          renderProdutos(products);
+          showBreadcrumb(category, products);
+        });
+        
+        const grid = document.createElement('div');
+        grid.className = 'produtos-grid';
+        
+        const productsToShow = products.slice(0, 4);
+        
+        productsToShow.forEach(p => {
+          const div = document.createElement('div');
+          div.className = 'produto';
+          div.addEventListener('click', () => {
+            const params = new URLSearchParams();
+            params.set('produto', p.nome);
+            params.set('imagem', encodeURIComponent(p.imagem));
+            params.set('descricao', p.descricao);
+            params.set('preco', p.preco);
+            params.set('mensagem', p.mensagem);
+            location.href = `produto.html?${params.toString()}`;
+          });
+          div.innerHTML = `
+            <img src="${p.imagem}" alt="${p.nome}">
+            <div class="nome">${p.nome}</div>
+            <div class="preco">${p.preco}</div>
+            <div class="extra">${p.mensagem}</div>
+          `;
+          grid.appendChild(div);
+        });
+        
+        categorySection.appendChild(title);
+        categorySection.appendChild(grid);
+        produtosWrapper.appendChild(categorySection);
+      }
+    }
+
+    function renderProdutos(list) {
+      produtosWrapper.innerHTML = '';
+      
+      const validProducts = list.filter(p => p.nome && p.imagem);
+      
+      if (validProducts.length === 0) {
+        produtosWrapper.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 20px;">Nenhum produto encontrado</div>';
+        return;
+      }
+      
+      const grid = document.createElement('div');
+      grid.className = 'produtos-grid';
+      
+      validProducts.forEach(p => {
+        const div = document.createElement('div');
+        div.className = 'produto';
+        div.addEventListener('click', () => {
+          const params = new URLSearchParams();
+          params.set('produto', p.nome);
+          params.set('imagem', encodeURIComponent(p.imagem));
+          params.set('descricao', p.descricao);
+          params.set('preco', p.preco);
+          params.set('mensagem', p.mensagem);
+          location.href = `produto.html?${params.toString()}`;
+        });
+        div.innerHTML = `
+          <img src="${p.imagem}" alt="${p.nome}">
+          <div class="nome">${p.nome}</div>
+          <div class="preco">${p.preco}</div>
+          <div class="extra">${p.mensagem}</div>
+        `;
+        grid.appendChild(div);
+      });
+      
+      produtosWrapper.appendChild(grid);
+    }
+
+    function showBreadcrumb(name, list) {
+      pathEl.textContent = 'Início';
+      crumbNameEl.textContent = name;
+      headerTitleEl.textContent = name.toUpperCase();
+      
+      const validProducts = list.filter(p => p.nome && p.imagem);
+      headerCountEl.textContent = `${validProducts.length} produto${validProducts.length !== 1 ? 's' : ''}`;
+      
+      breadcrumbEl.style.display = 'block';
+    }
+
+    function resetToHomePage() {
+      breadcrumbEl.style.display = 'none';
+      document.querySelector('.photo-scroll-wrapper').style.display = '';
+      document.querySelector('.image-scroll-wrapper').style.display = '';
+      document.querySelector('.banner-scroll-wrapper').style.display = '';
+      renderCategorizedProducts();
+    }
+
+    document.getElementById('home-link').addEventListener('click', function(e) {
+      e.preventDefault();
+      resetToHomePage();
+      overlay.classList.remove('open');
+    });
+
+    document.querySelectorAll('.category').forEach(el => {
+      el.addEventListener('click', () => {
+        const name = el.textContent.trim();
+        const filtered = filterByCategory(name);
+        document.querySelector('.photo-scroll-wrapper').style.display = 'none';
+        document.querySelector('.image-scroll-wrapper').style.display = 'none';
+        document.querySelector('.banner-scroll-wrapper').style.display = 'none';
+        renderProdutos(filtered);
+        showBreadcrumb(name, filtered);
+      });
+    });
+
+    document.querySelectorAll('.photo-item').forEach(el => {
+      el.addEventListener('click', () => {
+        const category = el.getAttribute('data-category');
+        const filtered = filterByCategory(category);
+        document.querySelector('.photo-scroll-wrapper').style.display = 'none';
+        document.querySelector('.image-scroll-wrapper').style.display = 'none';
+        document.querySelector('.banner-scroll-wrapper').style.display = 'none';
+        renderProdutos(filtered);
+        showBreadcrumb(category, filtered);
+      });
+    });
+
+    pathEl.addEventListener('click', resetToHomePage);
+    logoImg.addEventListener('click', resetToHomePage);
+
+    searchInput.addEventListener('input', () => {
+      const term = searchInput.value.trim();
+      if (!term) {
+        resetToHomePage();
+        return;
+      }
+      
+      const normalizedTerm = normalizeText(term);
+      const filtered = allProdutos.filter(p => {
+        const nome = normalizeText(p.nome || '');
+        return nome.includes(normalizedTerm);
+      });
+      
+      document.querySelector('.photo-scroll-wrapper').style.display = 'none';
+      document.querySelector('.image-scroll-wrapper').style.display = 'none';
+      document.querySelector('.banner-scroll-wrapper').style.display = 'none';
+      renderProdutos(filtered);
+      showBreadcrumb(term, filtered);
+    });
+
+    searchButton.addEventListener('click', () => {
+      const term = searchInput.value.trim();
+      const normalizedTerm = normalizeText(term);
+      const filtered = term ? allProdutos.filter(p => {
+        const nome = normalizeText(p.nome || '');
+        return nome.includes(normalizedTerm);
+      }) : allProdutos;
+      
+      document.querySelector('.photo-scroll-wrapper').style.display = term ? 'none' : '';
+      document.querySelector('.image-scroll-wrapper').style.display = term ? 'none' : '';
+      document.querySelector('.banner-scroll-wrapper').style.display = term ? 'none' : '';
+      renderProdutos(filtered);
+      showBreadcrumb(term || 'Resultados', filtered);
+    });
+
+    const allProductsLink = document.getElementById('all-products-link');
+    allProductsLink.addEventListener('click', e => {
+      e.preventDefault();
+      overlay.classList.remove('open');
+      document.querySelector('.photo-scroll-wrapper').style.display = 'none';
+      document.querySelector('.image-scroll-wrapper').style.display = 'none';
+      document.querySelector('.banner-scroll-wrapper').style.display = 'none';
+      renderProdutos(allProdutos);
+      showBreadcrumb('Todos os Produtos', allProdutos);
+    });
+  </script>
+</body>
+</html>

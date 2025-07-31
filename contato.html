@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Contato</title>
+  <link rel="icon" type="image/png" href="divas.png">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+    * { 
+      margin: 0; 
+      padding: 0; 
+      box-sizing: border-box; 
+    }
+    body { 
+      font-family: Arial, sans-serif; 
+      background-color: #fff; 
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    .nav-wrapper { 
+      position: sticky; 
+      top: 0; 
+      background: #fff; 
+      z-index: 1000; 
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .header { 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      padding: 8px 16px; 
+    }
+    .menu-icon { 
+      font-size: 28px; 
+      cursor: pointer; 
+      position: relative; 
+    }
+    .bag-icon {
+      width: 56px;
+      height: 56px;
+      cursor: pointer;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .bag-icon img {
+      width: 100%;
+      height: auto;
+    }
+    .bag-icon .cart-count {
+      position: absolute; 
+      top: -4px; 
+      right: -8px;
+      background: #ff0000; 
+      color: #fff; 
+      font-size: 12px;
+      padding: 2px 6px; 
+      border-radius: 12px; 
+      display: none;
+    }
+    .logo img { 
+      max-height: 80px; 
+      width: auto; 
+      cursor: pointer; 
+    }
+    
+    /* Estilos da página de contato */
+    .contato-container {
+      padding: 16px 16px 8px;
+      max-width: 600px;
+      margin: 0 auto;
+      flex: 1;
+    }
+    .breadcrumb-list {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 16px;
+    }
+    .breadcrumb-list a {
+      color: #007bff;
+      text-decoration: none;
+    }
+    .contato-titulo {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      text-align: left;
+      color: #000;
+    }
+    .contato-info {
+      margin-bottom: 20px;
+      line-height: 1.6;
+      color: #000;
+      font-weight: 600;
+    }
+    .contato-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 14px;
+      font-size: 16px;
+      color: #000;
+      font-weight: 600;
+    }
+    .contato-item a {
+      color: #000;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .contato-item img {
+      width: 24px;
+      height: 24px;
+      margin-right: 12px;
+    }
+    
+    /* RODAPÉ AMARELO */
+    .site-footer {
+      background-color: #dfb33a;
+      color: #fff;
+      padding: 16px;
+      margin-top: auto;
+    }
+    .footer-item {
+      margin-bottom: 12px;
+      font-size: 14px;
+    }
+    .footer-item.instagram {
+      margin-bottom: 32px;
+    }
+    .footer-item.instagram img {
+      width: 20px;
+      height: auto;
+      display: block;
+    }
+    .footer-item a {
+      color: inherit;
+      text-decoration: none;
+    }
+    .footer-item:last-child {
+      margin-bottom: 0;
+    }
+    
+    /* overlayMenu */
+    #overlayMenu { 
+      position: fixed; 
+      top: 0; 
+      left: 0; 
+      width: 100%; 
+      height: 100%; 
+      background: #fff; 
+      transform: translateX(-100%); 
+      transition: transform 0.3s ease; 
+      z-index: 2000; 
+      padding: 60px 20px; 
+      display: flex; 
+      flex-direction: column; 
+    }
+    #overlayMenu.open { transform: translateX(0); }
+    #overlayMenu .close-btn { 
+      position: absolute; 
+      top: 16px; 
+      right: 16px; 
+      font-size: 32px; 
+      cursor: pointer; 
+    }
+    #overlayMenu nav { 
+      display: flex; 
+      flex-direction: column; 
+      gap: 0; 
+      margin-top: 20px; 
+    }
+    #overlayMenu nav a { 
+      font-size: 20px; 
+      color: #000; 
+      text-decoration: none; 
+      text-transform: uppercase; 
+      padding: 8px 0; 
+    }
+  </style>
+</head>
+<body>
+  <div id="overlayMenu">
+    <div class="close-btn">&times;</div>
+    <nav>
+      <a href="index.html">Início</a>
+      <a href="contato.html">Contato</a>
+    </nav>
+  </div>
+
+  <div class="nav-wrapper">
+    <header class="header">
+      <div class="menu-icon">&#9776;</div>
+      <a href="index.html" class="logo">
+        <img src="logo.webp" alt="Logo">
+      </a>
+      <a href="carrinho.html" class="bag-icon" id="cart-icon">
+        <img src="cart.webp" alt="Carrinho de compras">
+        <span class="cart-count" id="cart-count">0</span>
+      </a>
+    </header>
+  </div>
+
+  <!-- Conteúdo da página de contato -->
+  <div class="contato-container">
+    <div class="breadcrumb-list"><a href="index.html">Início</a> &gt; Contato</div>
+    
+    <h1 class="contato-titulo">CONTATO</h1>
+    
+    <div class="contato-info">
+      Nosso horário de atendimento é de Segunda a Sábado das 08:00 as 19:00
+    </div>
+    
+    <div class="contato-item">
+      <img src="whatsapp.png" alt="WhatsApp">
+      <a href="https://wa.me/5598982066609" target="_blank">5598982066609</a>
+    </div>
+    
+    <div class="contato-item">
+      <img src="telefone.png" alt="Telefone">
+      <a href="tel:98982066609">98982066609</a>
+    </div>
+    
+    <div class="contato-item">
+      <img src="email.png" alt="E-mail">
+      <a href="mailto:Carmemcakes91@hotmail.com">Carmemcakes91@hotmail.com</a>
+    </div>
+    
+    <div class="contato-item">
+      <img src="localize.png" alt="Localização">
+      Rua Soares Ramos, N° 50, Paulo Ramos - MA, CEP 65716-000
+    </div>
+  </div>
+
+  <!-- RODAPÉ AMARELO -->
+  <footer class="site-footer">
+    <div class="footer-item instagram">
+      <a href="https://www.instagram.com/carmem_mcakes/" target="_blank" rel="noopener">
+        <img src="instagramicon.png" alt="Instagram">
+      </a>
+    </div>
+    <div class="footer-item">
+      <a href="https://wa.me/5598982066609" target="_blank" rel="noopener">
+        5598982066609
+      </a>
+    </div>
+    <div class="footer-item">
+      <a href="tel:+5598982066609">
+        98982066609
+      </a>
+    </div>
+    <div class="footer-item copyright">
+      © Flowmize – 2025. Todos os direitos reservados.
+    </div>
+  </footer>
+
+  <script>
+    // — CARRINHO UNIFICADO USANDO cartItems —
+    const CART_KEY = 'cartItems';
+    const cartCountEl = document.getElementById('cart-count');
+
+    function getCartItems() {
+      try {
+        return JSON.parse(localStorage.getItem(CART_KEY)) || [];
+      } catch {
+        return [];
+      }
+    }
+
+    function renderCartCount() {
+      const totalQty = getCartItems().reduce((sum, item) => sum + (item.quantidade || 0), 0);
+      if (totalQty > 0) {
+        cartCountEl.textContent = totalQty;
+        cartCountEl.style.display = 'inline-block';
+      } else {
+        cartCountEl.style.display = 'none';
+      }
+    }
+
+    // Inicializa e mantém atualizado ao voltar de outra aba
+    document.addEventListener('DOMContentLoaded', renderCartCount);
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) renderCartCount();
+    });
+    
+    // OVERLAY MENU
+    const overlay = document.getElementById('overlayMenu');
+    document.querySelector('.menu-icon').onclick = () => overlay.classList.add('open');
+    overlay.querySelector('.close-btn').onclick = () => overlay.classList.remove('open');
+  </script>
+</body>
+</html>
