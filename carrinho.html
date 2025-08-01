@@ -553,16 +553,18 @@
         }
 
         const tipoEntrega = tipoEntregaSelect.value;
+        let cidade = '';
+        let referencia = '';
         
         if (tipoEntrega === 'entrega') {
-          const cidade = document.getElementById('cidade').value.trim();
+          cidade = document.getElementById('cidade').value.trim();
           if (!cidade) {
             errorCidade.textContent = 'Por favor, informe a cidade.';
             document.getElementById('cidade').focus();
             return;
           }
 
-          const referencia = document.getElementById('referencia').value.trim();
+          referencia = document.getElementById('referencia').value.trim();
           if (!referencia) {
             errorReferencia.textContent = 'Por favor, informe um ponto de referência.';
             document.getElementById('referencia').focus();
@@ -576,7 +578,7 @@
         const totalFormatado = formatPrice(total);
 
         const itemsText = cartItems.map(item => 
-          `${item.nome} x${item.quantidade} - ${formatPrice(item.preco)}`
+          `${item.quantidade}x ${item.nome} - ${formatPrice(item.preco)}`
         ).join('\n');
 
         const totalItems = cartItems.reduce((sum, item) => sum + item.quantidade, 0);
@@ -590,8 +592,8 @@
         message += `Tipo de Entrega: ${tipoEntrega === 'entrega' ? 'ENTREGA' : 'RETIRADA'}%0A%0A`;
 
         if (tipoEntrega === 'entrega') {
-          message += `Cidade: ${document.getElementById('cidade').value}%0A`;
-          message += `Ponto de Referência: ${document.getElementById('referencia').value}%0A`;
+          message += `Cidade: ${cidade}%0A`;
+          message += `Ponto de Referência: ${referencia}%0A`;
           const complemento = document.getElementById('complemento').value;
           if (complemento) {
             message += `Complemento: ${complemento}%0A`;
@@ -637,7 +639,8 @@
           qtdTotal: totalItems,
           total: totalFormatado,
           tipoEntrega: tipoEntrega,
-          referencia: tipoEntrega === 'entrega' ? document.getElementById('referencia').value : '',
+          cidade: cidade,
+          referencia: referencia,
           complemento: tipoEntrega === 'entrega' ? document.getElementById('complemento').value : '',
           pagamento: document.getElementById('pagamento').value
         };
