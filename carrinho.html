@@ -581,43 +581,43 @@
 
         const totalItems = cartItems.reduce((sum, item) => sum + item.quantidade, 0);
 
-        // 2. Monta a mensagem do WhatsApp IMEDIATAMENTE
+        // 2. Monta a mensagem do WhatsApp IMEDIATAMENTE (SEM NEGRITO)
         let message = `================================%0A`;
-        message += `         *COMPROVANTE DE PEDIDO*%0A`;
+        message += `         COMPROVANTE DE PEDIDO%0A`;
         message += `================================%0A%0A`;
         
-        message += `*Nome:* ${document.getElementById('nome').value}%0A`;
-        message += `*Tipo de Entrega:* ${tipoEntrega === 'entrega' ? 'ENTREGA' : 'RETIRADA'}%0A%0A`;
+        message += `Nome: ${document.getElementById('nome').value}%0A`;
+        message += `Tipo de Entrega: ${tipoEntrega === 'entrega' ? 'ENTREGA' : 'RETIRADA'}%0A%0A`;
 
         if (tipoEntrega === 'entrega') {
-          message += `*Cidade:* ${document.getElementById('cidade').value}%0A`;
-          message += `*Ponto de Referência:* ${document.getElementById('referencia').value}%0A`;
+          message += `Cidade: ${document.getElementById('cidade').value}%0A`;
+          message += `Ponto de Referência: ${document.getElementById('referencia').value}%0A`;
           const complemento = document.getElementById('complemento').value;
           if (complemento) {
-            message += `*Complemento:* ${complemento}%0A`;
+            message += `Complemento: ${complemento}%0A`;
           }
-          message += `*Taxa de entrega:* R$ 3,00%0A%0A`;
+          message += `Taxa de entrega: R$ 3,00%0A%0A`;
         }
 
         message += `______________________________________%0A`;
-        message += `*Forma de Pagamento:* ${document.getElementById('pagamento').value}%0A`;
+        message += `Forma de Pagamento: ${document.getElementById('pagamento').value}%0A`;
         if (document.getElementById('pagamento').value === 'Pix') {
-          message += `*Chave Pix:* 98982066609%0A`;
+          message += `Chave Pix: 98982066609%0A`;
         }
         message += `______________________________________%0A%0A`;
 
-        message += `*Itens do Pedido:*%0A`;
+        message += `Itens do Pedido:%0A`;
         cartItems.forEach(item => {
-          message += `➤ *${item.nome}*%0A`;
-          message += `   *Quantidade:* ${item.quantidade}%0A`;
-          message += `   *Subtotal:* ${formatPrice(parseFloat(item.preco) * item.quantidade)}%0A%0A`;
+          message += `➤ ${item.nome}%0A`;
+          message += `   Quantidade: ${item.quantidade}%0A`;
+          message += `   Subtotal: ${formatPrice(parseFloat(item.preco) * item.quantidade)}%0A%0A`;
         });
 
         message += `______________________________________%0A`;
-        message += `*TOTAL DO PEDIDO:* ${totalFormatado}%0A`;
+        message += `TOTAL DO PEDIDO: ${totalFormatado}%0A`;
         message += `______________________________________%0A%0A`;
         
-        message += `*OBS:* O pedido só será reservado após a confirmação do pagamento via PIX.`;
+        message += `OBS: O pedido só será reservado após a confirmação do pagamento via PIX.`;
 
         // 3. ABRE O WHATSAPP IMEDIATAMENTE (ANTES DE QUALQUER OUTRA AÇÃO)
         window.open(`https://wa.me/98981729088?text=${message}`, '_blank');
