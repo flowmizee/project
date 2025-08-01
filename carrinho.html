@@ -599,12 +599,12 @@
           message += `Taxa de entrega: R$ 3,00%0A%0A`;
         }
 
-        message += `--------------------------------------%0A`;
+        message += `-----------------------------------------------------%0A`;
         message += `Forma de Pagamento: ${document.getElementById('pagamento').value}%0A`;
         if (document.getElementById('pagamento').value === 'Pix') {
           message += `Chave Pix: 98982066609%0A`;
         }
-        message += `--------------------------------------%0A%0A`;
+        message += `-----------------------------------------------------%0A%0A`;
 
         message += `Itens do Pedido:%0A`;
         cartItems.forEach(item => {
@@ -613,9 +613,9 @@
           message += `   Subtotal: ${formatPrice(parseFloat(item.preco) * item.quantidade)}%0A%0A`;
         });
 
-        message += `--------------------------------------%0A`;
+        message += `-----------------------------------------------------%0A`;
         message += `TOTAL DO PEDIDO: ${totalFormatado}%0A`;
-        message += `--------------------------------------%0A%0A`;
+        message += `-----------------------------------------------------%0A%0A`;
         
         message += `OBS: O pedido só será reservado após a confirmação do pagamento via PIX.`;
 
