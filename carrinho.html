@@ -301,15 +301,15 @@
 
   <div class="cart-summary">
     <div class="cart-total">
-      <span>Subtotal:</span>
-      <span id="cart-subtotal">R$ 0,00</span>
+      <span>Total:</span>
+      <span id="cart-total">R$ 0,00</span>
     </div>
     <div class="delivery-fee" id="delivery-fee">
       + Taxa de entrega: R$ 3,00
     </div>
-    <div class="cart-total">
-      <span>Total:</span>
-      <span id="cart-total">R$ 0,00</span>
+    <div class="cart-total" id="total-with-delivery" style="display: none;">
+      <span>Total com entrega:</span>
+      <span id="final-total">R$ 0,00</span>
     </div>
     <button class="checkout-btn" id="open-modal">CONTINUAR PARA O PAGAMENTO</button>
     <a href="index.html" class="continue-shopping">Voltar às compras</a>
@@ -398,9 +398,10 @@
     document.addEventListener('DOMContentLoaded', function() {
       const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
       const cartItemsEl = document.getElementById('cart-items');
-      const cartSubtotalEl = document.getElementById('cart-subtotal');
       const cartTotalEl = document.getElementById('cart-total');
+      const finalTotalEl = document.getElementById('final-total');
       const deliveryFeeEl = document.getElementById('delivery-fee');
+      const totalWithDeliveryEl = document.getElementById('total-with-delivery');
       const cartCountEl = document.getElementById('cart-count');
       const openModalBtn = document.getElementById('open-modal');
       const closeModalBtn = document.getElementById('close-modal');
@@ -413,7 +414,7 @@
       const tipoEntregaSelect = document.getElementById('tipoEntrega');
 
       // URL do Google AppScript
-      const APPSCRIPT_URL = "https://script.google.com/macros/s/AKfycbyfIYe2HYb4Tqjhsznru5XW0z-GkORTelqWGYpxWQyI1RdvOc4N2LA9PZW_Rsc47K9o7A/exec";
+      const APPSCRIPT_URL = "https://script.google.com/macros/s/AKfycbzv3XPbi5nuTMUalbVl7J_Zifd0uizfLtumcCLimCqX0nvzUwfBQVjAlC87k-C_pH4uaQ/exec";
       const DELIVERY_FEE = 3.00;
 
       // Funções do carrinho
@@ -431,15 +432,16 @@
         let subtotal = cartItems.reduce((sum, item) => sum + (parseFloat(item.preco) * item.quantidade), 0);
         const isDelivery = tipoEntregaSelect.value === 'entrega';
         
-        cartSubtotalEl.textContent = formatPrice(subtotal);
+        cartTotalEl.textContent = formatPrice(subtotal);
         
         if (isDelivery) {
           const totalWithDelivery = subtotal + DELIVERY_FEE;
           deliveryFeeEl.style.display = 'block';
-          cartTotalEl.textContent = formatPrice(totalWithDelivery);
+          totalWithDeliveryEl.style.display = 'flex';
+          finalTotalEl.textContent = formatPrice(totalWithDelivery);
         } else {
           deliveryFeeEl.style.display = 'none';
-          cartTotalEl.textContent = formatPrice(subtotal);
+          totalWithDeliveryEl.style.display = 'none';
         }
       }
 
@@ -533,7 +535,7 @@
         this.value = this.value.replace(/\D/g, '');
       });
 
-      // Enviar pedido
+      // Enviar pedido - Versão otimizada
       document.getElementById('checkoutForm').addEventListener('submit', function(e) {
         e.preventDefault();
 
@@ -570,7 +572,7 @@
           }
         }
 
-        // Prepara os dados
+        // 1. Primeiro: Prepara os dados
         const subtotal = cartItems.reduce((sum, item) => sum + (parseFloat(item.preco) * item.quantidade), 0);
         const total = tipoEntrega === 'entrega' ? subtotal + DELIVERY_FEE : subtotal;
         const totalFormatado = formatPrice(total);
@@ -581,7 +583,7 @@
 
         const totalItems = cartItems.reduce((sum, item) => sum + item.quantidade, 0);
 
-        // Monta a mensagem do WhatsApp
+        // 2. Monta a mensagem do WhatsApp IMEDIATAMENTE (SEM NEGRITO)
         let message = `================================%0A`;
         message += `         COMPROVANTE DE PEDIDO%0A`;
         message += `================================%0A%0A`;
@@ -610,31 +612,26 @@
         cartItems.forEach(item => {
           message += `➤ ${item.nome}%0A`;
           message += `   Quantidade: ${item.quantidade}%0A`;
-          message += `   Preço Unitário: ${formatPrice(item.preco)}%0A`;
           message += `   Subtotal: ${formatPrice(parseFloat(item.preco) * item.quantidade)}%0A%0A`;
         });
 
         message += `-----------------------------------------------------%0A`;
-        message += `Subtotal: ${formatPrice(subtotal)}%0A`;
-        if (tipoEntrega === 'entrega') {
-          message += `Taxa de Entrega: R$ 3,00%0A`;
-        }
         message += `TOTAL DO PEDIDO: ${totalFormatado}%0A`;
         message += `-----------------------------------------------------%0A%0A`;
         
         message += `OBS: O pedido só será reservado após a confirmação do pagamento via PIX.`;
 
-        // Abre o WhatsApp
-        window.open(`https://wa.me/98982066609?text=${message}`, '_blank');
+        // 3. ABRE O WHATSAPP IMEDIATAMENTE (ANTES DE QUALQUER OUTRA AÇÃO)
+        window.open(`https://wa.me/98981729088?text=${message}`, '_blank');
 
-        // Limpa o carrinho
+        // 4. Limpa o carrinho (feedback visual imediato)
         localStorage.removeItem('cartItems');
         renderCartItems();
         renderCartCount();
         hideModal();
         showNotification("Pedido registrado com sucesso!");
 
-        // Envia para o AppScript
+        // 5. Envia para o AppScript EM SEGUNDO PLANO (sem bloquear a interface)
         const formData = {
           nome: document.getElementById('nome').value,
           whatsapp: whatsapp,
@@ -648,6 +645,7 @@
           pagamento: document.getElementById('pagamento').value
         };
 
+        // Usando setTimeout com delay 0 para não bloquear a interface
         setTimeout(() => {
           const params = new URLSearchParams(formData);
           fetch(`${APPSCRIPT_URL}?${params}`)
@@ -669,3 +667,4 @@
   </script>
 </body>
 </html>
+																																																				
